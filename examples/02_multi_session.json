@@ -1,0 +1,146 @@
+{
+  "v": "1.0",
+  "project": "ecommerce-api",
+  "created": "2025-10-06T10:00:00Z",
+  "updated": "2025-10-06T15:30:00Z",
+  "sessions": [
+    {
+      "id": "s1",
+      "start": "2025-10-06T10:00:00Z",
+      "end": "2025-10-06T12:00:00Z",
+      "goal": "setup_project_structure",
+      "state": "completed",
+      "decisions": [
+        {
+          "id": "d1",
+          "what": "express_framework",
+          "why": "lightweight_flexible_large_ecosystem",
+          "alt": ["fastify", "koa"],
+          "impact": ["package.json", "src/server.ts"]
+        },
+        {
+          "id": "d2",
+          "what": "typescript",
+          "why": "type_safety_better_dx",
+          "alt": ["javascript"],
+          "impact": ["tsconfig.json", "all_source_files"]
+        },
+        {
+          "id": "d3",
+          "what": "prisma_orm",
+          "why": "type_safe_migrations_modern_dx",
+          "alt": ["typeorm", "sequelize"],
+          "impact": ["schema.prisma", "src/db.ts"]
+        }
+      ],
+      "files": {
+        "package.json": {
+          "action": "created",
+          "role": "dependencies_config",
+          "deps": [],
+          "status": "complete"
+        },
+        "tsconfig.json": {
+          "action": "created",
+          "role": "typescript_config",
+          "deps": [],
+          "status": "complete"
+        },
+        "src/server.ts": {
+          "action": "created",
+          "role": "entry_point",
+          "deps": ["express", "@prisma/client"],
+          "status": "complete"
+        },
+        "src/db.ts": {
+          "action": "created",
+          "role": "database_connection",
+          "deps": ["@prisma/client"],
+          "status": "complete"
+        },
+        "prisma/schema.prisma": {
+          "action": "created",
+          "role": "database_schema",
+          "deps": [],
+          "status": "complete"
+        }
+      },
+      "patterns": {
+        "project_structure": "src/routes,src/controllers,src/models,src/middleware",
+        "db_pattern": "prisma_client_singleton"
+      },
+      "blockers": [],
+      "next": ["implement_user_auth"],
+      "kv": {
+        "node_version": "20.x",
+        "package_manager": "npm",
+        "db": "postgresql"
+      }
+    },
+    {
+      "id": "s2",
+      "start": "2025-10-06T14:00:00Z",
+      "end": null,
+      "goal": "implement_user_authentication",
+      "state": "in_progress",
+      "decisions": [
+        {
+          "id": "d4",
+          "what": "jwt_auth",
+          "why": "stateless_scalable_standard",
+          "alt": ["session_based", "oauth_only"],
+          "impact": ["src/auth/jwt.ts", "src/middleware/auth.ts"]
+        },
+        {
+          "id": "d5",
+          "what": "bcrypt_hashing",
+          "why": "secure_industry_standard",
+          "alt": ["argon2", "scrypt"],
+          "impact": ["src/auth/hash.ts"]
+        }
+      ],
+      "files": {
+        "src/auth/jwt.ts": {
+          "action": "created",
+          "role": "jwt_token_generation_verification",
+          "deps": ["jsonwebtoken"],
+          "status": "complete"
+        },
+        "src/auth/hash.ts": {
+          "action": "created",
+          "role": "password_hashing",
+          "deps": ["bcrypt"],
+          "status": "complete"
+        },
+        "src/middleware/auth.ts": {
+          "action": "created",
+          "role": "auth_guard_middleware",
+          "deps": ["src/auth/jwt.ts"],
+          "status": "partial"
+        },
+        "src/routes/auth.ts": {
+          "action": "created",
+          "role": "auth_endpoints",
+          "deps": ["src/auth/jwt.ts", "src/auth/hash.ts"],
+          "status": "partial"
+        }
+      },
+      "patterns": {
+        "auth_flow": "register->hash_password->save_user | login->verify_password->generate_jwt->httpOnly_cookie",
+        "middleware_pattern": "verify_jwt->attach_user_to_req->next()"
+      },
+      "blockers": [
+        {
+          "id": "b1",
+          "desc": "need_to_decide_refresh_token_strategy",
+          "status": "open"
+        }
+      ],
+      "next": ["implement_refresh_token", "add_rate_limiting", "write_auth_tests"],
+      "kv": {
+        "jwt_expiry": "15m",
+        "jwt_secret_env": "JWT_SECRET"
+      }
+    }
+  ]
+}

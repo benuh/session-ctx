@@ -1,0 +1,60 @@
+{
+  "v": "1.0",
+  "project": "ecommerce-api",
+  "created": "2025-10-06T10:00:00Z",
+  "updated": "2025-10-06T10:00:00Z",
+  "sessions": [
+    {
+      "id": "s1",
+      "start": "2025-10-06T10:00:00Z",
+      "end": null,
+      "goal": "setup_project_structure",
+      "state": "in_progress",
+      "decisions": [
+        {
+          "id": "d1",
+          "what": "express_framework",
+          "why": "lightweight_flexible_large_ecosystem",
+          "alt": ["fastify", "koa"],
+          "impact": ["package.json", "src/server.ts"]
+        },
+        {
+          "id": "d2",
+          "what": "typescript",
+          "why": "type_safety_better_dx",
+          "alt": ["javascript"],
+          "impact": ["tsconfig.json", "all_source_files"]
+        }
+      ],
+      "files": {
+        "package.json": {
+          "action": "created",
+          "role": "dependencies_config",
+          "deps": [],
+          "status": "complete"
+        },
+        "tsconfig.json": {
+          "action": "created",
+          "role": "typescript_config",
+          "deps": [],
+          "status": "complete"
+        },
+        "src/server.ts": {
+          "action": "created",
+          "role": "entry_point",
+          "deps": ["express"],
+          "status": "partial"
+        }
+      },
+      "patterns": {
+        "project_structure": "src/routes,src/controllers,src/models,src/middleware"
+      },
+      "blockers": [],
+      "next": ["setup_database_connection", "create_user_routes"],
+      "kv": {
+        "node_version": "20.x",
+        "package_manager": "npm"
+      }
+    }
+  ]
+}
