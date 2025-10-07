@@ -148,6 +148,19 @@ session-ctx/
 4. **Incremental**: Update as you go, not end-of-session
 5. **Stateful**: Track progress across sessions
 
+## Experimental: Bytecode-Friendly Formats
+
+Interested in even more efficient formats? Check out [`experimental/`](./experimental) for:
+
+- **Optimized JSON**: Minified format with ~40% token reduction (recommended for LLMs)
+- **MessagePack**: Binary format for ~60% size reduction
+- **Protocol Buffers**: Schema-based binary for ~70% size reduction
+- **Benchmarks**: Compare different formats
+
+**TLDR:** For LLM agents, use optimized JSON. Binary formats require decoding to text anyway.
+
+See [experimental/README.md](./experimental/README.md) for details.
+
 ## Use Cases
 
 - ✅ Long-term projects with multiple sessions

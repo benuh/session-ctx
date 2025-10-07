@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package session_ctx;
+
+// Main session context message
+message SessionContext {
+  string version = 1;
+  string project = 2;
+  string created = 3;
+  string updated = 4;
+  repeated Session sessions = 5;
+}
+
+// Individual session
+message Session {
+  string id = 1;
+  string start = 2;
+  string end = 3;
+  string goal = 4;
+  string state = 5;  // "in_progress", "completed", "blocked"
+  repeated Decision decisions = 6;
+  map<string, FileInfo> files = 7;
+  map<string, string> patterns = 8;
+  repeated Blocker blockers = 9;
+  repeated string next = 10;
+  map<string, string> kv = 11;
+}
+
+// Architecture decision
+message Decision {
+  string id = 1;
+  string what = 2;
+  string why = 3;
+  repeated string alternatives = 4;
+  repeated string impact = 5;
+}
+
+// File information
+message FileInfo {
+  string action = 1;  // "created", "modified", "deleted"
+  string role = 2;
+  repeated string deps = 3;
+  string status = 4;  // "complete", "partial", "blocked"
+}
+
+// Blocker information
+message Blocker {
+  string id = 1;
+  string desc = 2;
+  string status = 3;  // "open", "resolved"
+}
