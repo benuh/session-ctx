@@ -109,6 +109,7 @@ python session_ctx_manager.py end
 
 ## When to Use
 
+Good for:
 - Multi-session projects
 - Team development
 - Switching between different AI tools
@@ -116,7 +117,7 @@ python session_ctx_manager.py end
 
 Not for:
 - Single-session tasks
-- Human documentation (use ADRs)
+- Human documentation (use ADRs instead)
 
 ## How It Works
 
@@ -142,4 +143,4 @@ See `experimental/` for benchmarks.
 
 ---
 
-MIT License. Made because re-explaining context every session got annoying.
+MIT License - use it however you want. Made because re-explaining context every session got old.

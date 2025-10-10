@@ -116,10 +116,10 @@ else:
 
 ## Token Efficiency Tips
 
-1. **Use abbreviations**: `desc` not `description`, `alt` not `alternatives`
-2. **Avoid prose**: `"why": "fast_reliable"` not `"why": "We chose this because it's fast and reliable"`
-3. **Structured over freeform**: Use arrays and objects, not paragraphs
-4. **Minimal redundancy**: Don't repeat info available in code/git
+1. **Use abbreviations**: `desc` instead of `description`, `alt` instead of `alternatives`
+2. **Skip prose**: `"why": "fast_reliable"` instead of `"why": "We chose this because it's fast and reliable"`
+3. **Prefer structure**: Use arrays and objects instead of paragraphs
+4. **Avoid redundancy**: Don't repeat what's already in code or git
 
 ## Example Update Flow
 
@@ -164,7 +164,7 @@ python session_ctx_manager.py end "completed"
 
 ## Remember
 
-- Update incrementally, not just at session end
-- Keep one session "in_progress" at a time
-- New sessions read context to continue work seamlessly
-- This is for agent parsing - optimize for tokens, not human reading
+- Update throughout the session, not just at the end
+- Keep only one session "in_progress" at a time
+- New sessions read the context to continue seamlessly
+- This is for agent parsing, so optimize for tokens rather than human readability

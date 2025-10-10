@@ -7,11 +7,11 @@ Make session context more efficient for AI agents to process by using bytecode/b
 
 | Format | Size | Parse Speed | Human Readable | LLM Friendly | Ecosystem |
 |--------|------|-------------|----------------|--------------|-----------|
-| **JSON** | 100% | Baseline | ✅ Yes | ✅ Native | ✅ Universal |
-| **MessagePack** | ~60% | 2-3x faster | ❌ No | ⚠️ Needs decode | ✅ Good |
-| **Protocol Buffers** | ~40% | 3-5x faster | ❌ No | ⚠️ Needs decode | ✅ Excellent |
-| **CBOR** | ~55% | 2x faster | ❌ No | ⚠️ Needs decode | ⚠️ Limited |
-| **Custom Binary** | ~30% | Fastest | ❌ No | ❌ Complex | ❌ None |
+| **JSON** | 100% | Baseline | Yes | Native | Universal |
+| **MessagePack** | ~60% | 2-3x faster | No | Needs decode | Good |
+| **Protocol Buffers** | ~40% | 3-5x faster | No | Needs decode | Excellent |
+| **CBOR** | ~55% | 2x faster | No | Needs decode | Limited |
+| **Custom Binary** | ~30% | Fastest | No | Complex | None |
 
 ## Key Considerations for AI Agents
 
@@ -110,14 +110,12 @@ See:
 ## Conclusion
 
 **For AI agents (LLMs):**
-→ Use **minified JSON with aggressive abbreviations**
-→ Binary formats don't help because LLMs need text anyway
+Use minified JSON with aggressive abbreviations. Binary formats don't help because LLMs need text anyway.
 
 **For traditional software agents:**
-→ Use **Protocol Buffers or MessagePack**
-→ Significant performance gains
+Use Protocol Buffers or MessagePack for significant performance gains.
 
 **Our approach:**
-→ Optimize JSON structure (current implementation)
-→ Provide binary options as experimental features
-→ Let users choose based on their use case
+- Optimize JSON structure (current implementation)
+- Provide binary options as experimental features
+- Let users choose based on their use case

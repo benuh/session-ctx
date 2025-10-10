@@ -2,7 +2,7 @@
 
 ## Instructions for AI Agents
 
-When working in a repository, automatically maintain a `.session-ctx.json` file to persist context across sessions.
+When working in a repository, maintain a `.session-ctx.json` file to keep context across sessions.
 
 ### On Session Start
 
@@ -12,11 +12,11 @@ When working in a repository, automatically maintain a `.session-ctx.json` file 
 
 ### During Session
 
-Automatically update `.session-ctx.json` after significant actions:
-- File creations/modifications
+Update `.session-ctx.json` after significant actions:
+- File creations or modifications
 - Architecture decisions
 - Bug fixes or feature implementations
-- Blockers encountered
+- Blockers
 - Dependencies added
 
 ### File Structure
@@ -100,12 +100,12 @@ Update `.session-ctx.json` when:
 
 ### Benefits
 
-- New sessions understand previous context instantly
-- Reduces re-explanation and re-discovery time
-- Maintains decision history and rationale
-- Tracks progress across multiple sessions
-- Enables consistent coding patterns
+- New sessions understand previous context immediately
+- No re-explanation or re-discovery needed
+- Maintains decision history with reasoning
+- Tracks progress across sessions
+- Keeps coding patterns consistent
 
-### Implementation Note
+### Note
 
-This is NOT a user-facing summary. It's optimized for AI agent parsing and minimal token usage.
+This is for AI agent parsing, not user-facing documentation. Optimized for minimal token usage.

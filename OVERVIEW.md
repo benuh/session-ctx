@@ -135,21 +135,21 @@ Agent starts ──▶ Reads .session-ctx.json
 
 ## Key Benefits
 
-### 🚀 Instant Context Loading
+**Instant Context Loading**
 - No re-reading entire codebase
 - Direct access to decisions and reasoning
 
-### 🧠 Preserved Intelligence
+**Preserved Intelligence**
 - WHY decisions were made
 - WHAT patterns to follow
 - WHERE to continue
 
-### ⚡ Token Efficient
-- Structured data > prose
+**Token Efficient**
+- Structured data over prose
 - Abbreviated keys
 - Minimal redundancy
 
-### 🔄 Cross-Session Continuity
+**Cross-Session Continuity**
 - Pick up exactly where you left off
 - Consistent across multiple sessions
 - Works with different AI agents
@@ -191,13 +191,13 @@ agent: [reads same context, maintains consistency]
 
 ## Who Benefits
 
-✅ **Long-term projects** - Multiple sessions over weeks/months
-✅ **Team projects** - Shared context across developers
-✅ **Agent switching** - Use different AI tools consistently
-✅ **Complex refactoring** - Track decisions over time
-✅ **Learning projects** - See decision history
+**Long-term projects** - Multiple sessions over weeks/months
+**Team projects** - Shared context across developers
+**Agent switching** - Use different AI tools consistently
+**Complex refactoring** - Track decisions over time
+**Learning projects** - See decision history
 
-❌ **Not for:**
+**Not recommended for:**
 - One-off scripts
 - Single session tasks
 - Projects without AI assistance
@@ -209,7 +209,7 @@ agent: [reads same context, maintains consistency]
 3. Work normally - agent handles everything
 4. Next session: "Continue from context"
 
-**That's it!** 🎉
+That's it.
 
 ---
 

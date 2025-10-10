@@ -77,12 +77,12 @@ For typical session context:
 
 ## Pros
 - Smallest file size
-- Type safety with schema
-- Forward/backward compatibility
-- Very fast parsing
+- Type safety through schema
+- Forward and backward compatible
+- Fast parsing
 
 ## Cons
-- Requires compilation step
+- Needs compilation step
 - Not human-readable
-- Additional tooling required
-- LLMs still need text conversion
+- Requires additional tooling
+- LLMs still need text conversion anyway
