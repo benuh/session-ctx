@@ -1,202 +1,164 @@
 # session-ctx
 
-> **Agent-optimized context persistence across coding sessions**
+Context persistence for AI coding sessions. Basically stops your AI agent from forgetting everything between chats.
 
-## Problem
+## The Problem
 
-When working with AI coding agents, each new session starts fresh:
-- Conversation history is lost
-- Previous decisions and reasoning aren't available
-- Agents must re-interpret code without context
-- Time wasted re-explaining goals and patterns
+You know how every time you start a new ChatGPT or Claude session, you have to re-explain everything? "We're using Express because...", "The auth system works like...", "Don't suggest X because we already tried that..."
 
-## Solution
+Gets old fast.
 
-**session-ctx** is a lightweight, token-efficient context system that persists:
-- ✅ Architecture decisions and rationale
-- ✅ File purposes and relationships
-- ✅ Project patterns and conventions
-- ✅ Progress state and next steps
-- ✅ Blockers and resolutions
+The code is still there, sure. But all the *why* behind the decisions? Gone. The agent has to re-read everything, re-discover your patterns, and you waste time getting it back up to speed.
 
-## Key Features
+## What This Does
 
-### For AI Agents
-- **Token-efficient format**: Abbreviated keys, minimal prose
-- **Structured relationships**: Dependencies, impact tracking, state machines
-- **Fast parsing**: JSON format optimized for LLM consumption
-- **Incremental updates**: Update after each significant change
+session-ctx maintains a `.session-ctx.json` file in your repo that tracks:
+- Architecture decisions and why you made them
+- What each file does and how they connect
+- Coding patterns you're following
+- What's done, what's in progress, what's blocked
+- Next steps
 
-### For Developers
-- **Zero maintenance**: Agents handle all updates
-- **Cross-session continuity**: New sessions pick up where you left off
-- **Decision history**: Understand WHY choices were made
-- **Progress tracking**: See what's done, in-progress, or blocked
+It's like giving your AI agent a notepad that persists between sessions.
 
-## Quick Start
+## How to Use It
 
-### 1. Add the Agent Prompt
-
-When starting an AI coding session, provide this instruction:
+When you start an AI coding session, just tell it:
 
 ```
-Use the session-ctx system to maintain context. Read prompts/AGENT_PROMPT.md
-for full instructions. Create/update .session-ctx.json in the repo root
-throughout our session.
+Use the session-ctx system to maintain context. Create/update .session-ctx.json
+in the repo root throughout our session.
 ```
-
-### 2. Agent Auto-Creates Context
 
 The agent will:
-- Check for existing `.session-ctx.json`
-- Read it to understand previous work (if exists)
-- Create one if it doesn't exist
-- Update it automatically as work progresses
+1. Check if `.session-ctx.json` exists
+2. Read it if it does (to understand what you've been doing)
+3. Create it if it doesn't
+4. Update it automatically as you work
 
-### 3. Continuous Updates
-
-The agent updates `.session-ctx.json` when:
-- Creating/modifying files
-- Making architecture decisions
-- Installing dependencies
-- Encountering blockers
-- Completing objectives
+Next session, same thing. The agent reads the context file and picks up where you left off.
 
 ## File Format
+
+The format is pretty simple - just JSON with abbreviated keys to save tokens:
 
 ```json
 {
   "v": "1.0",
-  "project": "<project_name>",
-  "created": "<ISO_timestamp>",
-  "updated": "<ISO_timestamp>",
+  "project": "my-api",
   "sessions": [
     {
-      "id": "<session_id>",
-      "start": "<ISO_timestamp>",
-      "end": "<ISO_timestamp>",
-      "goal": "<primary_objective>",
-      "state": "completed|in_progress|blocked",
-      "decisions": [],
-      "files": {},
-      "patterns": {},
-      "blockers": [],
-      "next": [],
-      "kv": {}
+      "id": "s1",
+      "goal": "setup_auth",
+      "state": "in_progress",
+      "decisions": [
+        {
+          "what": "jwt_tokens",
+          "why": "stateless_simple",
+          "alt": ["sessions", "oauth"],
+          "impact": ["auth.ts", "middleware.ts"]
+        }
+      ],
+      "files": {
+        "auth.ts": {
+          "action": "created",
+          "role": "jwt_logic",
+          "deps": ["jsonwebtoken"],
+          "status": "complete"
+        }
+      },
+      "next": ["add_refresh_tokens", "write_tests"]
     }
   ]
 }
 ```
 
-See [examples/](./examples) for real-world scenarios.
+Check [examples/](./examples) for real examples.
 
-## Examples
+## Why Abbreviated Keys?
 
-### Initial Session
-```json
-{
-  "goal": "setup_project_structure",
-  "state": "in_progress",
-  "decisions": [
-    {
-      "what": "express_framework",
-      "why": "lightweight_flexible",
-      "alt": ["fastify", "koa"],
-      "impact": ["src/server.ts"]
-    }
-  ],
-  "next": ["setup_database", "create_routes"]
-}
-```
+Tokens cost money. Fewer characters = fewer tokens = lower API costs.
 
-### Continuation Session
-Agent reads previous context:
-- Understands Express was chosen for flexibility
-- Knows database setup is next
-- Follows established patterns
+The abbreviated format saves about 40% on tokens compared to pretty JSON. Over hundreds of sessions, that adds up.
 
-## Directory Structure
+See [experimental/](./experimental) if you want to get into the weeds on optimization.
 
-```
-session-ctx/
-├── README.md                          # This file
-├── prompts/
-│   └── AGENT_PROMPT.md               # Full agent instructions
-├── examples/
-│   ├── 01_initial_session.json       # First session example
-│   ├── 02_multi_session.json         # Multi-session example
-│   └── 03_bugfix_session.json        # Bug fix example
-└── templates/
-    └── .session-ctx.json              # Base template
-```
+## Should I Commit This to Git?
 
-## Benefits
+Up to you.
 
-| Without session-ctx | With session-ctx |
-|---------------------|------------------|
-| Re-explain context each session | Agent reads previous context |
-| Re-discover architecture decisions | Decision history with rationale |
-| Inconsistent patterns | Documented conventions |
-| Lost progress tracking | Clear state and next steps |
-| High token usage on re-interpretation | Efficient context loading |
+**Commit it if:**
+- You're working with a team (shared context helps everyone)
+- You want the history preserved
 
-## Design Principles
+**Don't commit if:**
+- Solo project and you don't care
+- File gets too big (you can archive old sessions)
 
-1. **Agent-first**: Optimized for LLM parsing, not human readability
-2. **Token-efficient**: Abbreviated keys, structured data
-3. **Minimal friction**: Zero developer maintenance
-4. **Incremental**: Update as you go, not end-of-session
-5. **Stateful**: Track progress across sessions
-
-## Experimental: Bytecode-Friendly Formats
-
-Interested in even more efficient formats? Check out [`experimental/`](./experimental) for:
-
-- **Optimized JSON**: Minified format with ~40% token reduction (recommended for LLMs)
-- **MessagePack**: Binary format for ~60% size reduction
-- **Protocol Buffers**: Schema-based binary for ~70% size reduction
-- **Benchmarks**: Compare different formats
-
-**TLDR:** For LLM agents, use optimized JSON. Binary formats require decoding to text anyway.
-
-See [experimental/README.md](./experimental/README.md) for details.
-
-## Use Cases
-
-- ✅ Long-term projects with multiple sessions
-- ✅ Onboarding new AI agents to existing projects
-- ✅ Maintaining consistency across different agents
-- ✅ Complex refactoring with decision tracking
-- ✅ Team projects with AI assistance
-
-## Not Suitable For
-
-- ❌ Single-session tasks
-- ❌ Projects requiring human-readable documentation (use ADRs instead)
-- ❌ Version-controlled decision logs (complement with ADRs)
+I usually add it to `.gitignore` for personal projects and commit it for team stuff.
 
 ## FAQ
 
-**Q: Should I commit `.session-ctx.json` to git?**
-A: Optional. It's useful for team context but can grow large. Consider `.gitignore` or periodic cleanup.
+**Does this work with ChatGPT/Claude/Copilot?**
+Yep, any AI agent that can read files.
 
-**Q: How is this different from ADRs (Architecture Decision Records)?**
-A: ADRs are human-readable documentation. session-ctx is agent-optimized for minimal token usage and fast parsing.
+**What if the file gets huge?**
+Archive old sessions to a separate file. Or just delete them if you don't need the history.
 
-**Q: Can I use this with multiple AI agents?**
-A: Yes! That's a key use case. Different agents can share context through the same file.
+**How's this different from ADRs?**
+ADRs are for humans. This is optimized for AI agents - abbreviated keys, structured format, minimal prose.
 
-**Q: What if the file gets too large?**
-A: Archive old sessions to `.session-ctx-archive.json` and keep recent sessions in the main file.
+**Can multiple agents use the same file?**
+Yeah, that's actually one of the better use cases. Switch between ChatGPT and Claude and they can both read the same context.
+
+## Examples
+
+Here's what happens in practice:
+
+**Session 1:**
+```
+You: "Build a REST API with auth"
+Agent: [creates context file, builds API, logs decisions]
+```
+
+**Session 2 (next day):**
+```
+You: "Continue from yesterday"
+Agent: [reads context, sees JWT was chosen, continues from there]
+```
+
+**Session 3 (different agent):**
+```
+You: "Continue from context"
+Different Agent: [reads same file, understands project state]
+```
+
+No re-explaining, no re-discovery. Just works.
+
+## What's in This Repo
+
+```
+prompts/          - Instructions for AI agents
+examples/         - Sample context files
+templates/        - Base template + helper script
+experimental/     - Token optimization experiments
+```
+
+The `prompts/` folder has the full instructions you can give to AI agents. `AGENT_PROMPT.md` is detailed, `QUICK_START.md` is the TLDR version.
 
 ## Contributing
 
-This is a reference implementation. Adapt the format and prompts to your needs!
+This is pretty experimental. If you've got ideas for better formats or find issues, open a PR or issue.
+
+Particularly interested in:
+- Better abbreviation strategies
+- Compression approaches that still work with LLMs
+- Real-world usage feedback
 
 ## License
 
-MIT
+MIT - do whatever you want with it.
 
 ---
 
-**Built for efficient AI collaboration across sessions**
+Made because I got tired of re-explaining the same context every session.

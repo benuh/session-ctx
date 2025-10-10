@@ -1,209 +1,158 @@
-# How to Use session-ctx
+# How to Actually Use This
 
-## For Users (You)
+## First Time
 
-### First Time Setup
-
-1. **Copy the agent prompt** from `prompts/QUICK_START.md`
-2. **Start your AI coding session** with this instruction:
+Copy this and paste it when you start working with an AI coding assistant:
 
 ```
 I'm using the session-ctx system to maintain context across sessions.
 
-1. Check if .session-ctx.json exists in this repo root
-2. If yes: Read it to understand previous work, decisions, and next steps
-3. If no: Create it using the base template
+Check if .session-ctx.json exists in this repo root. If yes, read it to
+understand previous work and decisions. If no, create it.
 
-Throughout our session, update .session-ctx.json after:
-- File creates/edits
-- Architecture decisions
-- Installing dependencies
-- Encountering blockers
-- Completing tasks
-
-Use token-efficient format with abbreviated keys and structured data.
+Throughout our session, update .session-ctx.json after file changes,
+architecture decisions, or when hitting blockers. Use token-efficient
+format with abbreviated keys.
 ```
 
-3. **Work normally** - The agent will handle everything automatically
+Then just work normally. The AI will handle the rest.
 
-### Subsequent Sessions
+## Next Time You Code
 
-Just start with:
+Just say:
 ```
 Continue from where we left off using .session-ctx.json
 ```
 
-The agent will:
-- Read the context file
-- Understand previous decisions
-- Continue with the next steps
-- Keep updating the context
+That's it. The agent reads the context and knows what you were doing.
 
-### That's It!
+## What Happens Behind the Scenes
 
-You never touch `.session-ctx.json` manually. The agent manages it completely.
+First time:
+1. Creates `.session-ctx.json` in your repo
+2. Starts tracking what you're working on
 
-## What the Agent Does
+During work:
+- You create/edit files → Logged
+- Make tech choices → Recorded with reasoning
+- Hit a blocker → Documented
+- Finish a task → Status updated
 
-### On First Use
-1. Creates `.session-ctx.json` in your repo root
-2. Initializes with project info
-3. Starts tracking the first session
-
-### Throughout the Session
-Automatically updates the file when:
-- You create/modify files → Logs file changes
-- Make tech choices → Records decisions with rationale
-- Install packages → Tracks dependencies
-- Hit blockers → Documents issues
-- Complete tasks → Updates state
-
-### On New Session
+New session:
 1. Reads `.session-ctx.json`
-2. Reviews previous sessions
-3. Understands context instantly
-4. Continues work seamlessly
+2. Understands what you did before
+3. Picks up from where you left off
 
-## Real-World Example
+## Real Example
 
-### Session 1: Initial Development
+**Day 1:**
 ```
-You: "Build a REST API with user authentication"
+You: "Build a REST API with user auth"
 
-Agent:
-- Creates .session-ctx.json
-- Logs decision: "express_framework" (why: lightweight)
-- Creates files: server.ts, auth.ts
-- Updates context with file purposes
-- Sets next steps: [implement_jwt, add_middleware]
+AI creates the context file, decides on Express + JWT,
+builds the auth system, logs everything to .session-ctx.json
 ```
 
-### Session 2: Continue Next Day
+**Day 2:**
 ```
 You: "Continue from yesterday"
 
-Agent:
-- Reads .session-ctx.json
-- Sees: "Next: implement_jwt, add_middleware"
-- Understands: Express chosen for lightweight API
-- Continues: Implements JWT from next steps
-- Updates: Marks JWT done, adds new next steps
+AI reads context, sees Express + JWT decision, knows auth
+is done, moves on to next steps
 ```
 
-### Session 3: Bug Fix
+**Week Later, Different AI:**
 ```
 You: "Fix the auth bug"
 
-Agent:
-- Reads context
-- Knows: JWT implementation in auth.ts
-- Understands: Auth flow pattern from context
-- Fixes: Bug in JWT verification
-- Logs: Decision and fix in context
+Different AI reads same context, understands the JWT flow,
+fixes bug without you explaining anything
 ```
 
-## Benefits You'll Notice
+## The File You Never Touch
 
-1. **No Re-explaining**
-   - ❌ Before: "Remember we're using Express with JWT..."
-   - ✅ After: "Continue where we left off"
+You don't manually edit `.session-ctx.json`. Ever. The AI maintains it.
 
-2. **Consistent Decisions**
-   - Context remembers WHY choices were made
-   - Future work follows established patterns
-
-3. **Better Continuity**
-   - Agent knows what's done, in-progress, blocked
-   - Picks up exactly where you left off
-
-4. **Cross-Agent Compatibility**
-   - Switch between different AI tools
-   - All read the same context file
-
-## Optional: Review Context
-
-If you want to see what's been tracked:
+But if you're curious what it looks like:
 
 ```bash
-# View the file
 cat .session-ctx.json
-
-# Or use the helper script
-python session_ctx_manager.py summary
 ```
 
-But you typically never need to look at it!
-
-## Git Considerations
-
-### Option 1: Commit It (Recommended for teams)
+Or use the helper script:
 ```bash
+python templates/session_ctx_manager.py summary
+```
+
+## Git: To Commit or Not
+
+I commit it on team projects because then everyone's AI agents can see the full context. Makes onboarding faster.
+
+For personal stuff, I usually `.gitignore` it unless I want the history.
+
+```bash
+# To ignore it
+echo ".session-ctx.json" >> .gitignore
+
+# To commit it
 git add .session-ctx.json
 git commit -m "Update session context"
 ```
 
-**Pros:**
-- Team members' agents can see project history
-- Shared understanding across developers
-- Context survives repo clones
-
-**Cons:**
-- File can grow large over time
-- Contains detailed implementation notes
-
-### Option 2: Ignore It (For personal projects)
+If the file gets big, you can archive old sessions:
 ```bash
-echo ".session-ctx.json" >> .gitignore
+mv .session-ctx.json .session-ctx-archive-2024.json
+# AI will create a fresh one next session
 ```
 
-**Pros:**
-- Keeps repo cleaner
-- Private work history
+## What If Something Breaks
 
-**Cons:**
-- Lose context on new clones
-- No shared context with team
+**AI not updating the file?**
+Just remind it: "Update .session-ctx.json with that decision"
 
-### Option 3: Periodic Cleanup
+**File too big?**
+Delete old sessions or start fresh. Context from the last few sessions is usually enough.
+
+**Want to reset everything?**
 ```bash
-# Archive old sessions
-mv .session-ctx.json .session-ctx-archive-2025-10.json
-
-# Agent creates fresh file
-# But you can still reference the archive if needed
+rm .session-ctx.json
+# AI creates new one next time
 ```
 
-## Troubleshooting
+**Multiple projects?**
+Each repo gets its own `.session-ctx.json` in the root.
 
-**Q: Agent isn't updating the context**
-A: Remind it: "Update .session-ctx.json with this decision"
+## Advanced: Custom Tracking
 
-**Q: File is getting too large**
-A: Archive old sessions or start fresh periodically
-
-**Q: Want to reset context**
-A: Delete `.session-ctx.json` - agent will create a new one
-
-**Q: Multiple projects**
-A: Each repo has its own `.session-ctx.json` in its root
-
-## Advanced: Custom Instructions
-
-You can customize what gets tracked:
+You can tell the AI to track specific things:
 
 ```
-Also track these in .session-ctx.json:
-- Performance metrics for optimization decisions
-- Security considerations for auth choices
-- API endpoint versioning strategy
+Also track performance considerations and security decisions
+in .session-ctx.json
 ```
 
-The agent will adapt the context format to include your needs.
+The AI will adapt the format to include whatever you need.
 
-## Summary
+## The Difference It Makes
 
-**What you do:** Give the initial prompt once
-**What the agent does:** Everything else automatically
-**What you get:** Seamless context across sessions
+Without session-ctx:
+```
+You: [explain context for 5 minutes]
+AI: [re-reads code, re-discovers patterns]
+You: [finally start actual work]
+```
 
-Start your next AI coding session with session-ctx and experience the difference!
+With session-ctx:
+```
+You: "Continue from context"
+AI: [reads file in 10 seconds, ready to go]
+You: [start working immediately]
+```
+
+Worth it just for the time saved.
+
+## One More Thing
+
+The context file is optimized for token efficiency (abbreviated keys, minified format). That means it looks kinda ugly if you open it. That's intentional - saves ~40% on API costs.
+
+If you want to see what different formats look like, check `experimental/` for comparisons.

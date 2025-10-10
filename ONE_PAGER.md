@@ -1,38 +1,34 @@
-# session-ctx: One Page Reference
+# session-ctx: Quick Reference
 
-## What It Is
-Token-efficient context persistence for AI coding agents across sessions.
+## What is it?
+
+Context persistence for AI coding sessions. Stops agents from forgetting everything between chats.
 
 ## The Problem
-❌ AI agents forget context between sessions
-❌ You re-explain decisions every time
-❌ Inconsistent patterns across sessions
-❌ Wasted time re-discovering code
 
-## The Solution
-✅ Auto-maintained `.session-ctx.json` in repo root
-✅ Agent reads on start, updates throughout
-✅ Zero user maintenance
-✅ Seamless continuity
+Every new AI session starts from zero. You waste time re-explaining decisions, patterns, what you were working on. The code persists but the context doesn't.
+
+## The Fix
+
+Auto-maintained `.session-ctx.json` file that tracks decisions, file purposes, patterns, and progress. AI reads it on start, updates it as you work.
 
 ## Quick Start
 
-### Give Agent This Prompt (Once):
+Tell your AI agent:
 ```
 Use session-ctx system. Check for .session-ctx.json in repo root.
 If exists: read to understand context. If not: create it.
-Update throughout session after file changes, decisions, blockers.
-Use token-efficient format with abbreviated keys.
+Update throughout session. Use token-efficient format.
 ```
 
-### Next Session:
+Next session:
 ```
 Continue from .session-ctx.json
 ```
 
-Done! Agent handles everything.
+Done.
 
-## File Format (Agent Manages)
+## File Format (AI manages this)
 ```json
 {
   "sessions": [{
@@ -44,85 +40,106 @@ Done! Agent handles everything.
     "files": {
       "auth.ts": {"action": "created", "role": "jwt_logic", "deps": ["jsonwebtoken"]}
     },
-    "patterns": {"auth_flow": "jwt->cookie->verify"},
-    "next": ["add_refresh_token", "write_tests"]
+    "next": ["add_refresh", "tests"]
   }]
 }
 ```
 
 ## What Gets Tracked
-- **Decisions**: What you chose & why
-- **Files**: Purpose, dependencies, status
-- **Patterns**: Coding conventions
-- **Blockers**: Issues encountered
-- **Next steps**: What's pending
-- **State**: What's done/in-progress
 
-## Benefits
+- Decisions: What you chose and why
+- Files: Purpose, deps, status
+- Patterns: Coding conventions
+- Blockers: Issues hit
+- Next steps: TODOs
+- State: Done/in-progress/blocked
+
+## Before vs After
+
 | Before | After |
 |--------|-------|
-| Re-explain context (5 min) | Instant load (10 sec) |
+| "Let me explain the architecture..." (5 min) | Reads context (10 sec) |
 | No decision history | Full rationale logged |
-| Inconsistent patterns | Enforced conventions |
+| Inconsistent patterns | Follows established conventions |
 | "What were we doing?" | "Continuing step 3..." |
 
-## Git Usage
+## Git
+
 ```bash
-# Option 1: Commit it (team projects)
+# Commit it (team projects)
 git add .session-ctx.json
 
-# Option 2: Ignore it (personal)
+# Ignore it (personal)
 echo ".session-ctx.json" >> .gitignore
 
-# Option 3: Archive periodically
-mv .session-ctx.json .archive-2025-10.json
+# Archive when big
+mv .session-ctx.json .archive-jan2024.json
 ```
 
 ## Examples
-📁 `examples/01_initial_session.json` - First session
-📁 `examples/02_multi_session.json` - Continued work
-📁 `examples/03_bugfix_session.json` - Bug fix
 
-## Full Docs
-📖 `README.md` - Complete guide
-📖 `USAGE.md` - User workflow
-📖 `OVERVIEW.md` - Visual explanation
-📖 `prompts/AGENT_PROMPT.md` - Full agent instructions
-📖 `prompts/QUICK_START.md` - Agent quick reference
+In `examples/`:
+- 01_initial_session.json - First session
+- 02_multi_session.json - Continued work
+- 03_bugfix_session.json - Bug fix
 
-## Helper Script (Optional)
+## Docs
+
+- README.md - Full guide
+- USAGE.md - How to use
+- OVERVIEW.md - Visual explanation
+- prompts/AGENT_PROMPT.md - Complete AI instructions
+- prompts/QUICK_START.md - Quick AI reference
+
+## Helper Script (optional)
+
 ```bash
 python session_ctx_manager.py init "feature_goal"
 python session_ctx_manager.py summary
 python session_ctx_manager.py end
 ```
 
-## Key Principles
-1. **Agent-first**: Optimized for LLM parsing
-2. **Token-efficient**: Abbreviated keys, no prose
-3. **Zero maintenance**: Agent handles everything
-4. **Incremental**: Updates as you work
-5. **Stateful**: Preserves context across sessions
+## Key Ideas
 
-## Use Cases
-✅ Multi-session projects
-✅ Team development
-✅ Agent switching
-✅ Complex refactoring
+1. Optimized for AI parsing, not humans
+2. Token-efficient (abbreviated keys, no whitespace)
+3. Zero user maintenance
+4. Updates as you work, not end-of-session
+5. Preserves context across sessions
 
-❌ Single-session tasks
-❌ Human documentation (use ADRs)
+## When to Use
 
-## The Magic
+- Multi-session projects
+- Team development
+- Switching between different AI tools
+- Complex refactoring
+
+Not for:
+- Single-session tasks
+- Human documentation (use ADRs)
+
+## How It Works
+
 ```
 Session 1: Agent creates context while working
          ↓
-    .session-ctx.json (persists)
+    .session-ctx.json
          ↓
-Session 2: Agent reads & continues seamlessly
+Session 2: Agent reads and continues seamlessly
 ```
 
-**Result**: Stateful AI collaboration 🎉
+Result: AI that remembers what you were doing.
+
+## Token Savings
+
+Optimized format saves ~40% tokens vs pretty JSON.
+
+For 100 context reads:
+- GPT-4: Save $3
+- Claude: Save $0.90
+
+See `experimental/` for benchmarks.
 
 ---
-**MIT License** • Adapt freely • Built for efficiency
+
+MIT License. Made because re-explaining context every session got annoying.
