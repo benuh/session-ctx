@@ -28,20 +28,39 @@ That's it. The agent reads the context and knows what you were doing.
 
 ## What Happens Behind the Scenes
 
-First time:
-1. Creates `.session-ctx.json` in your repo
-2. Starts tracking what you're working on
+```
+First Time:
+┌──────────────────────────────────────┐
+│ [1] AI creates .session-ctx.json     │
+│ [2] Starts tracking your work        │
+└──────────────────────────────────────┘
 
-During work:
-- You create/edit files → Logged
-- Make tech choices → Recorded with reasoning
-- Hit a blocker → Documented
-- Finish a task → Status updated
+During Work:
+┌──────────────────────────────────────┐
+│ You create/edit files                │
+│         ↓                             │
+│ Logged to context file                │
+├──────────────────────────────────────┤
+│ Make tech choices                    │
+│         ↓                             │
+│ Recorded with reasoning               │
+├──────────────────────────────────────┤
+│ Hit a blocker                        │
+│         ↓                             │
+│ Documented                            │
+├──────────────────────────────────────┤
+│ Finish a task                        │
+│         ↓                             │
+│ Status updated                        │
+└──────────────────────────────────────┘
 
-New session:
-1. Reads `.session-ctx.json`
-2. Understands what you did before
-3. Picks up from where you left off
+New Session:
+┌──────────────────────────────────────┐
+│ [1] AI reads .session-ctx.json       │
+│ [2] Understands previous work        │
+│ [3] Picks up where you left off      │
+└──────────────────────────────────────┘
+```
 
 ## Real Example
 
@@ -135,18 +154,26 @@ The AI will adapt the format to include whatever you need.
 
 ## The Difference It Makes
 
-Without session-ctx:
 ```
-You: [explain context for 5 minutes]
-AI: [re-reads code, re-discovers patterns]
-You: [finally start actual work]
-```
+WITHOUT session-ctx:
+┌─────────────────────────────────────────────┐
+│ Time: 0 min    You explain project          │
+│ Time: 2 min    Still explaining...          │
+│ Time: 5 min    AI re-reads all code         │
+│ Time: 8 min    AI re-discovers patterns     │
+│ Time: 10 min   Finally ready to code        │
+└─────────────────────────────────────────────┘
+Total setup: 10 minutes
 
-With session-ctx:
-```
-You: "Continue from context"
-AI: [reads file in 10 seconds, ready to go]
-You: [start working immediately]
+WITH session-ctx:
+┌─────────────────────────────────────────────┐
+│ Time: 0 sec    You: "Continue from context" │
+│ Time: 10 sec   AI reads .session-ctx.json   │
+│ Time: 10 sec   Ready to code                │
+└─────────────────────────────────────────────┘
+Total setup: 10 seconds
+
+Savings: 9 min 50 sec per session
 ```
 
 Worth it just for the time saved.

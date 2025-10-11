@@ -49,7 +49,7 @@ for session_data in json_data['sessions']:
     session.state = session_data['state']
     # ... populate other fields
 
-# Serialize to binary
+# Convert to binary
 binary_data = ctx.SerializeToString()
 
 # Save to file
@@ -77,12 +77,12 @@ For typical session context:
 
 ## Pros
 - Smallest file size
-- Type safety through schema
-- Forward and backward compatible
-- Fast parsing
+- Validates data types
+- Works across versions
+- Fast to read
 
 ## Cons
-- Needs compilation step
+- Needs extra compile step
 - Not human-readable
-- Requires additional tooling
-- LLMs still need text conversion anyway
+- Needs extra tools
+- AI still needs text conversion anyway

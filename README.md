@@ -21,6 +21,22 @@ session-ctx maintains a `.session-ctx.json` file in your repo that tracks:
 
 It's like giving your AI agent a notepad that persists between sessions.
 
+```
+┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+│  Session 1  │         │  Session 2  │         │  Session 3  │
+│             │         │             │         │             │
+│  AI Agent   │────────▶│  AI Agent   │────────▶│  AI Agent   │
+│             │  reads  │             │  reads  │             │
+└──────┬──────┘         └──────┬──────┘         └──────┬──────┘
+       │ writes                │ writes                │ writes
+       │                       │                       │
+       ▼                       ▼                       ▼
+  ┌────────────────────────────────────────────────────────┐
+  │              .session-ctx.json                         │
+  │  (decisions, files, patterns, blockers, next steps)    │
+  └────────────────────────────────────────────────────────┘
+```
+
 ## How to Use It
 
 When you start an AI coding session, just tell it:
@@ -79,6 +95,19 @@ Check [examples/](./examples) for real examples.
 
 Tokens cost money. Fewer characters = fewer tokens = lower API costs.
 
+Visual comparison:
+```
+┌─────────────────────────────────────┐
+│ Pretty JSON:     1,507 bytes        │  $$$ Cost
+│ ████████████████████████████████████│
+└─────────────────────────────────────┘
+
+┌──────────────────────────┐
+│ Abbreviated:  892 bytes  │           $$ Cost (40% savings!)
+│ ████████████████████████ │
+└──────────────────────────┘
+```
+
 The abbreviated format saves about 40% on tokens compared to pretty JSON. Over hundreds of sessions, that adds up.
 
 See [experimental/](./experimental) if you want to get into the weeds on optimization.
@@ -115,22 +144,37 @@ Yeah, that's actually one of the better use cases. Switch between ChatGPT and Cl
 
 Here's what happens in practice:
 
-**Session 1:**
 ```
-You: "Build a REST API with auth"
-Agent: [creates context file, builds API, logs decisions]
-```
+Day 1 - Monday 10am
+┌────────────────────────────────────────┐
+│ You: "Build a REST API with auth"     │
+│                                        │
+│ Agent: ✓ Creates .session-ctx.json    │
+│        ✓ Decides on JWT                │
+│        ✓ Builds auth system            │
+│        ✓ Logs: "why JWT? stateless"    │
+└────────────────────────────────────────┘
 
-**Session 2 (next day):**
-```
-You: "Continue from yesterday"
-Agent: [reads context, sees JWT was chosen, continues from there]
-```
+Day 2 - Tuesday 3pm
+┌────────────────────────────────────────┐
+│ You: "Continue from yesterday"        │
+│                                        │
+│ Agent: ✓ Reads .session-ctx.json      │
+│        ✓ Sees JWT decision             │
+│        ✓ Understands auth is done      │
+│        ✓ Adds refresh tokens           │
+└────────────────────────────────────────┘
 
-**Session 3 (different agent):**
-```
-You: "Continue from context"
-Different Agent: [reads same file, understands project state]
+Week later - Different AI (Claude)
+┌────────────────────────────────────────┐
+│ You: "Continue from context"          │
+│                                        │
+│ Different Agent:                       │
+│        ✓ Reads same context file       │
+│        ✓ Gets full history             │
+│        ✓ Knows all decisions           │
+│        ✓ Continues building            │
+└────────────────────────────────────────┘
 ```
 
 No re-explaining, no re-discovery. Just works.
