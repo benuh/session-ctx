@@ -22,19 +22,16 @@ session-ctx maintains a `.session-ctx.json` file in your repo that tracks:
 It's like giving your AI agent a notepad that persists between sessions.
 
 ```
-┌─────────────┐         ┌─────────────┐         ┌─────────────┐
-│  Session 1  │         │  Session 2  │         │  Session 3  │
-│             │         │             │         │             │
-│  AI Agent   │────────▶│  AI Agent   │────────▶│  AI Agent   │
-│             │  reads  │             │  reads  │             │
-└──────┬──────┘         └──────┬──────┘         └──────┬──────┘
-       │ writes                │ writes                │ writes
-       │                       │                       │
-       ▼                       ▼                       ▼
-  ┌────────────────────────────────────────────────────────┐
-  │              .session-ctx.json                         │
-  │  (decisions, files, patterns, blockers, next steps)    │
-  └────────────────────────────────────────────────────────┘
+     Session 1           Session 2           Session 3
+    ┌─────────┐         ┌─────────┐         ┌─────────┐
+    │AI Agent │─ read ─▶│AI Agent │─ read ─▶│AI Agent │
+    └────┬────┘         └────┬────┘         └────┬────┘
+         │ write             │ write             │ write
+         ▼                   ▼                   ▼
+    ┌───────────────────────────────────────────────────┐
+    │            .session-ctx.json                      │
+    │  Stores: decisions, files, patterns, next steps   │
+    └───────────────────────────────────────────────────┘
 ```
 
 ## How to Use It
@@ -56,56 +53,49 @@ Next session, same thing. The agent reads the context file and picks up where yo
 
 ## File Format
 
-The format is pretty simple - just JSON with abbreviated keys to save tokens:
+Simple JSON with short keys to save tokens:
 
 ```json
 {
   "v": "1.0",
   "project": "my-api",
-  "sessions": [
-    {
-      "id": "s1",
-      "goal": "setup_auth",
-      "state": "in_progress",
-      "decisions": [
-        {
-          "what": "jwt_tokens",
-          "why": "stateless_simple",
-          "alt": ["sessions", "oauth"],
-          "impact": ["auth.ts", "middleware.ts"]
-        }
-      ],
-      "files": {
-        "auth.ts": {
-          "action": "created",
-          "role": "jwt_logic",
-          "deps": ["jsonwebtoken"],
-          "status": "complete"
-        }
-      },
-      "next": ["add_refresh_tokens", "write_tests"]
-    }
-  ]
+  "sessions": [{
+    "id": "s1",
+    "goal": "setup_auth",
+    "state": "in_progress",
+
+    "decisions": [{
+      "what": "jwt_tokens",
+      "why": "stateless_simple",
+      "alt": ["sessions", "oauth"],
+      "impact": ["auth.ts", "middleware.ts"]
+    }],
+
+    "files": {
+      "auth.ts": {
+        "action": "created",
+        "role": "jwt_logic",
+        "deps": ["jsonwebtoken"],
+        "status": "complete"
+      }
+    },
+
+    "next": ["add_refresh_tokens", "write_tests"]
+  }]
 }
 ```
 
-Check [examples/](./examples) for real examples.
+See [examples/](./examples) for more.
 
 ## Why Abbreviated Keys?
 
 Tokens cost money. Fewer characters = fewer tokens = lower API costs.
 
-Visual comparison:
 ```
-┌─────────────────────────────────────┐
-│ Pretty JSON:     1,507 bytes        │  $$$ Cost
-│ ████████████████████████████████████│
-└─────────────────────────────────────┘
+Token usage comparison:
 
-┌──────────────────────────┐
-│ Abbreviated:  892 bytes  │           $$ Cost (40% savings!)
-│ ████████████████████████ │
-└──────────────────────────┘
+Pretty JSON        1,507 bytes    ████████████████████  100%  ($$$)
+Abbreviated          892 bytes    ████████████           59%  ($$ - save 40%)
 ```
 
 The abbreviated format saves about 40% on tokens compared to pretty JSON. Over hundreds of sessions, that adds up.
@@ -145,36 +135,29 @@ Yeah, that's actually one of the better use cases. Switch between ChatGPT and Cl
 Here's what happens in practice:
 
 ```
-Day 1 - Monday 10am
-┌────────────────────────────────────────┐
-│ You: "Build a REST API with auth"     │
-│                                        │
-│ Agent: ✓ Creates .session-ctx.json    │
-│        ✓ Decides on JWT                │
-│        ✓ Builds auth system            │
-│        ✓ Logs: "why JWT? stateless"    │
-└────────────────────────────────────────┘
+DAY 1 - Monday 10am
+────────────────────────────────────────
+You:   "Build a REST API with auth"
+Agent: Creates .session-ctx.json
+       Decides on JWT
+       Builds auth system
+       Logs: "why JWT? stateless"
 
-Day 2 - Tuesday 3pm
-┌────────────────────────────────────────┐
-│ You: "Continue from yesterday"        │
-│                                        │
-│ Agent: ✓ Reads .session-ctx.json      │
-│        ✓ Sees JWT decision             │
-│        ✓ Understands auth is done      │
-│        ✓ Adds refresh tokens           │
-└────────────────────────────────────────┘
+DAY 2 - Tuesday 3pm
+────────────────────────────────────────
+You:   "Continue from yesterday"
+Agent: Reads .session-ctx.json
+       Sees JWT decision
+       Understands auth is done
+       Adds refresh tokens
 
-Week later - Different AI (Claude)
-┌────────────────────────────────────────┐
-│ You: "Continue from context"          │
-│                                        │
-│ Different Agent:                       │
-│        ✓ Reads same context file       │
-│        ✓ Gets full history             │
-│        ✓ Knows all decisions           │
-│        ✓ Continues building            │
-└────────────────────────────────────────┘
+WEEK LATER - Different AI
+────────────────────────────────────────
+You:   "Continue from context"
+Agent: Reads same context file
+       Gets full history
+       Knows all decisions
+       Continues building
 ```
 
 No re-explaining, no re-discovery. Just works.

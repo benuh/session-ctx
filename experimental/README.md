@@ -37,45 +37,42 @@ cd protobuf && protoc --python_out=. session_ctx.proto
 
 ## Test Results
 
+```
 100 sessions:
 
-| Format | Size | Tokens |
-|--------|------|--------|
-| Pretty JSON | 45 KB | 12,000 |
-| Optimized JSON | 27 KB | 7,200 |
-| MessagePack | 18 KB | 7,200* |
+Format           File Size   Tokens      Bar Chart
+───────────────────────────────────────────────────────────────
+Pretty JSON      45 KB       12,000      ████████████████████
+Optimized JSON   27 KB        7,200      ████████████  (40% less)
+MessagePack*     18 KB        7,200      ████████████  (needs conversion)
 
 *After converting for AI
-
-Visual comparison:
-```
-File Size:
-Pretty JSON     ████████████████████  45 KB
-Optimized JSON  ████████████          27 KB  (40% smaller)
-MessagePack     ████████              18 KB  (60% smaller)
-
-Token Count (what AI sees):
-Pretty JSON     ████████████████████  12,000 tokens
-Optimized JSON  ████████████          7,200 tokens   (40% less)
-MessagePack     ████████████          7,200 tokens*  (needs conversion)
 ```
 
 50-session project: Save $3 per 100 reads with optimized JSON.
 
 ## Optimization Tricks
 
-Abbreviate: `version` → `v`
-Numbers: `in_progress` → `0`
-Minify: Remove whitespace
+```
+Technique          Example                    Savings
+─────────────────────────────────────────────────────
+Abbreviate keys    "version" → "v"            6 chars
+Use numbers        "in_progress" → "0"        10 chars
+Remove whitespace  Minify JSON                30-40%
 
-Result: 56% smaller
+Combined result: 56% smaller
+```
 
 ## Use Cases
 
-Optimized JSON: AI agents, reduce costs
-MessagePack: Custom tools, network transfer
-Protocol Buffers: Production systems, data validation
-Pretty JSON: Debugging, human reading
+```
+Format              Best For
+─────────────────────────────────────────────────
+Optimized JSON      AI agents, reduce costs
+MessagePack         Custom tools, network transfer
+Protocol Buffers    Production systems, validation
+Pretty JSON         Debugging, human reading
+```
 
 ## Try It
 

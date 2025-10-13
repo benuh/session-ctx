@@ -8,12 +8,15 @@ Test setup: 10 sessions, real-world data, token counter, tested on GPT-4/3.5/Cla
 
 ## Results
 
-| Format | Size | Tokens | Reduction |
-|--------|------|--------|-----------|
-| Pretty JSON | 31 KB | 7,364 | Baseline |
-| Optimized | 15.6 KB | 4,381 | 40.5% |
+```
+Format         Size      Tokens    Reduction
+─────────────────────────────────────────────
+Pretty JSON    31 KB     7,364     -
+Optimized      15.6 KB   4,381     40.5%
 
-Saves 2,983 tokens per read, consistent across all models.
+Saves 2,983 tokens per read
+Consistent across all models
+```
 
 ## Cost Savings
 
@@ -66,9 +69,13 @@ Zero data loss
 
 ## Real Scenarios
 
-Solo dev (50 sessions): Save $6, 15 min
-Team project (100 sessions): Save $30, 1.5 hours
-Enterprise (500 sessions): Save $150, 7.5 hours
+```
+Scenario                 Savings
+────────────────────────────────────────
+Solo dev (50 sessions)   $6, 15 min
+Team (100 sessions)      $30, 1.5 hours
+Enterprise (500)         $150, 7.5 hours
+```
 
 ## Why Not Binary?
 

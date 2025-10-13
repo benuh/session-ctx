@@ -30,13 +30,17 @@ Continue from context
 - Blockers
 - Next steps
 
-Example format:
 ```json
 {
   "sessions": [{
     "goal": "implement_auth",
-    "decisions": [{"what": "jwt", "why": "stateless"}],
-    "files": {"auth.ts": {"role": "jwt_logic"}},
+    "decisions": [{
+      "what": "jwt",
+      "why": "stateless"
+    }],
+    "files": {
+      "auth.ts": {"role": "jwt_logic"}
+    },
     "next": ["add_refresh", "tests"]
   }]
 }
@@ -83,9 +87,14 @@ Skip for: One-off scripts, single sessions
 
 ## Token Savings
 
-Saves ~40% tokens vs standard JSON.
+```
+Standard JSON    ████████████████████  100%  ($$$)
+Optimized JSON   ████████████           60%  ($$)
 
-100 context reads: Save $3 (GPT-4), $0.90 (Claude)
+Savings: 40% fewer tokens
+
+100 reads: Save $3 (GPT-4), $0.90 (Claude)
+```
 
 See `experimental/` for details.
 

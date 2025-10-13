@@ -41,60 +41,64 @@ Example:
 ## Why It Helps
 
 ```
-WITHOUT session-ctx:                WITH session-ctx:
-┌─────────────────────────┐        ┌─────────────────────────┐
-│ Start session           │        │ Start session           │
-│         ↓               │        │         ↓               │
-│ Explain everything      │        │ Read .session-ctx.json  │
-│   (5 minutes)           │        │   (10 seconds)          │
-│         ↓               │        │         ↓               │
-│ Agent re-reads code     │        │ Agent ready to work     │
-│   (5 minutes)           │        │                         │
-│         ↓               │        │                         │
-│ Agent re-discovers      │        │                         │
-│   patterns              │        │                         │
-│   (5 minutes)           │        │                         │
-│         ↓               │        │         ↓               │
-│ Finally start work      │        │ Start work immediately  │
-│   (15 min lost)         │        │   (10 sec lost)         │
-└─────────────────────────┘        └─────────────────────────┘
+WITHOUT session-ctx           WITH session-ctx
+─────────────────────────     ─────────────────────────
+Start session                 Start session
+  ↓                             ↓
+Explain everything            Read .session-ctx.json
+  (5 minutes)                   (10 seconds)
+  ↓                             ↓
+Agent re-reads code           Agent ready to work
+  (5 minutes)
+  ↓
+Agent re-discovers patterns
+  (5 minutes)
+  ↓                             ↓
+Start work                    Start work
+  (15 min wasted)               (10 sec used)
+─────────────────────────     ─────────────────────────
 
-Benefits Summary:
+IMPROVEMENT
 ────────────────────────────────────
-Setup time:      15 min → 10 sec
-Context loss:    Yes → No
-Consistency:     Maybe → Always
-Decision history: None → Complete
-────────────────────────────────────
+Setup time       15 min  →  10 sec
+Context loss     Yes     →  No
+Consistency      Maybe   →  Always
+Decision history None    →  Complete
 ```
 
 ## Example Flow
 
-Session 1:
-- You: "Build REST API with auth"
-- Agent creates `.session-ctx.json`, builds the API, logs decisions
+```
+Session 1
+────────────────────────────────────────
+You:   "Build REST API with auth"
+Agent: Creates .session-ctx.json
+       Builds API
+       Logs decisions
 
-Session 2:
-- You: "Continue from yesterday"
-- Agent reads the context, sees what's done, continues building
+Session 2
+────────────────────────────────────────
+You:   "Continue from yesterday"
+Agent: Reads context
+       Sees what's done
+       Continues building
+```
 
 ## Benefits
 
 ```
-┌────────────────────────────────────────────────┐
-│ Speed         Session startup: 80% faster     │
-│ Context       No re-discovery needed          │
-│ Consistency   Patterns stay the same          │
-│ Cost          Uses 40% fewer tokens           │
-│ Flexibility   Works across any AI agent       │
-└────────────────────────────────────────────────┘
+BENEFITS
+────────────────────────────────────────
+Speed        80% faster session startup
+Context      No re-discovery needed
+Consistency  Patterns stay the same
+Cost         Uses 40% fewer tokens
+Flexibility  Works across any AI agent
 
-Real Numbers:
-  Before: 15 minutes to get started
-  After:  10 seconds to get started
-
-  Before: 12,000 tokens per context load
-  After:  7,200 tokens per context load
+NUMBERS
+────────────────────────────────────────
+Setup time   15 min  →  10 sec
+Token usage  12,000  →  7,200 tokens
 ```
 
 ## When to Use

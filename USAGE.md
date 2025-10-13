@@ -29,63 +29,50 @@ That's it. The agent reads the context and knows what you were doing.
 ## What Happens Behind the Scenes
 
 ```
-First Time:
-┌──────────────────────────────────────┐
-│ [1] AI creates .session-ctx.json     │
-│ [2] Starts tracking your work        │
-└──────────────────────────────────────┘
+FIRST TIME
+────────────────────────────────────────
+1. AI creates .session-ctx.json
+2. Starts tracking your work
 
-During Work:
-┌──────────────────────────────────────┐
-│ You create/edit files                │
-│         ↓                             │
-│ Logged to context file                │
-├──────────────────────────────────────┤
-│ Make tech choices                    │
-│         ↓                             │
-│ Recorded with reasoning               │
-├──────────────────────────────────────┤
-│ Hit a blocker                        │
-│         ↓                             │
-│ Documented                            │
-├──────────────────────────────────────┤
-│ Finish a task                        │
-│         ↓                             │
-│ Status updated                        │
-└──────────────────────────────────────┘
+DURING WORK
+────────────────────────────────────────
+Create/edit files      →  Logged to context
+Make tech choices      →  Recorded with reasoning
+Hit a blocker          →  Documented
+Finish a task          →  Status updated
 
-New Session:
-┌──────────────────────────────────────┐
-│ [1] AI reads .session-ctx.json       │
-│ [2] Understands previous work        │
-│ [3] Picks up where you left off      │
-└──────────────────────────────────────┘
+NEW SESSION
+────────────────────────────────────────
+1. AI reads .session-ctx.json
+2. Understands previous work
+3. Picks up where you left off
 ```
 
 ## Real Example
 
-**Day 1:**
 ```
+DAY 1
+────────────────────────────────────────
 You: "Build a REST API with user auth"
+AI:  Creates context file
+     Decides on Express + JWT
+     Builds auth system
+     Logs everything to .session-ctx.json
 
-AI creates the context file, decides on Express + JWT,
-builds the auth system, logs everything to .session-ctx.json
-```
-
-**Day 2:**
-```
+DAY 2
+────────────────────────────────────────
 You: "Continue from yesterday"
+AI:  Reads context
+     Sees Express + JWT decision
+     Knows auth is done
+     Moves on to next steps
 
-AI reads context, sees Express + JWT decision, knows auth
-is done, moves on to next steps
-```
-
-**Week Later, Different AI:**
-```
+WEEK LATER - Different AI
+────────────────────────────────────────
 You: "Fix the auth bug"
-
-Different AI reads same context, understands the JWT flow,
-fixes bug without you explaining anything
+AI:  Reads same context
+     Understands JWT flow
+     Fixes bug without explanation
 ```
 
 ## The File You Never Touch
@@ -155,25 +142,17 @@ The AI will adapt the format to include whatever you need.
 ## The Difference It Makes
 
 ```
-WITHOUT session-ctx:
-┌─────────────────────────────────────────────┐
-│ Time: 0 min    You explain project          │
-│ Time: 2 min    Still explaining...          │
-│ Time: 5 min    AI re-reads all code         │
-│ Time: 8 min    AI re-discovers patterns     │
-│ Time: 10 min   Finally ready to code        │
-└─────────────────────────────────────────────┘
-Total setup: 10 minutes
+WITHOUT session-ctx                    WITH session-ctx
+──────────────────────────────────     ──────────────────────────────────
+0 min   You explain project            0 sec   "Continue from context"
+2 min   Still explaining...            10 sec  AI reads context file
+5 min   AI re-reads all code           10 sec  Ready to code
+8 min   AI re-discovers patterns
+10 min  Finally ready to code
+──────────────────────────────────     ──────────────────────────────────
+Total: 10 minutes                      Total: 10 seconds
 
-WITH session-ctx:
-┌─────────────────────────────────────────────┐
-│ Time: 0 sec    You: "Continue from context" │
-│ Time: 10 sec   AI reads .session-ctx.json   │
-│ Time: 10 sec   Ready to code                │
-└─────────────────────────────────────────────┘
-Total setup: 10 seconds
-
-Savings: 9 min 50 sec per session
+                    Save 9 min 50 sec per session
 ```
 
 Worth it just for the time saved.
