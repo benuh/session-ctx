@@ -1,0 +1,43 @@
+V2 FORMAT SAFETY SUMMARY
+========================
+
+GUARANTEE: V1 and V2 ARE COMPLETELY SEPARATE FILES
+
+File Structure:
+---------------
+✓ .session-ctx.json          ← V1 format (NEVER touched by V2 tools)
+✓ .session-ctx.v2.json       ← V2 format (separate file)
+✓ .session-ctx.v1-from-v2.json ← Safe conversion output
+
+Safety Features Implemented:
+-----------------------------
+1. Different filenames - no conflicts possible
+2. V1→V2 conversion READS V1, WRITES new V2 file
+3. V2→V1 conversion WRITES to .v1-from-v2.json (not original)
+4. Overwrite protection - errors if V2 exists (need --force)
+5. File existence checks before all operations
+6. Clear error messages with recovery instructions
+
+Test Commands:
+--------------
+# Safe conversions (originals preserved)
+python v2_layered_format.py v1-to-v2     # Creates V2, preserves V1
+python v2_layered_format.py v2-to-v1     # Creates new file, preserves both
+
+# Compare formats (no modifications)
+python v2_layered_format.py compare
+
+# Overwrite V2 only (V1 still safe)
+python v2_layered_format.py v1-to-v2 --force
+
+Documentation:
+--------------
+✓ V2_SAFETY.md - Detailed safety guide
+✓ FILE_STRUCTURE.md - File layout and workflow
+✓ V2_FORMAT.md - Technical specification
+✓ V2_SUMMARY.md - Overview and usage
+
+BOTTOM LINE:
+------------
+Your V1 file is 100% safe. V2 is a separate, independent format
+that you can test without any risk to your original data.
